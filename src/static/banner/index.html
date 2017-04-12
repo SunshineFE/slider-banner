@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>mock banner</title>
+  <meta charset="utf-8">
+  <meta name="keywords" content="banner">
+  <meta name="description" content="banner">
+  <meta name="version" content="1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <!--针对不识别viewport的老式浏览器，比如黑莓-->
+  <meta name="HandheldFriendly" content="true">
+  <!-- 针对微软老式浏览器-->
+  <meta name="MobileOptimized" content="320">
+  <!--启动webapp 全屏模式-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <!--隐藏状态栏，设置状态栏颜色-->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!--UC强制全屏-->
+  <!---->
+  <meta name="full-screen" content="yes">
+  <!--UC应用模式-->
+  <meta name="browsermode" content="application">
+  <!--QQ浏览器强制全屏-->
+  <meta name="x5-full-screen" content="true">
+  <!--QQ浏览器应用模式-->
+  <meta name="x5-page-mode" content="app">
+  <meta name="apple-mobile-web-app-title" content="banner">
+  <link rel="apple-touch-icon" sizes="57x57" href="img/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
+  <link rel="stylesheets" type="text/css" href="https://cdn.bootcss.com/normalize/6.0.0/normalize.css">
+  <style>
+    ul,li{
+      list-style: none;
+      margin:0;
+      padding: 0;
+    }
+
+    .xx-banner-container{
+      position: relative;
+      /*overflow-x: hidden;*/
+      margin-top:40px;
+    }
+
+    .xx-banner-wrapper{
+      position: absolute;
+      display: -webkit-box;
+      height: 100%;
+      perspective:320;
+      -webkit-perspective:320;
+    }
+
+    .xx-banner-item{
+      position:relative;
+      transform-style: preserve-3d;
+    }
+
+    .xx-banner-item:nth-child(1){
+      transform: rotate3d(0,1,0,-220deg);
+    }
+
+    .xx-banner-item:nth-child(1) img{
+      width:40vw;
+    }
+
+    .xx-banner-item:nth-child(2){
+
+      transform:translate3d(-25px,0,40px);
+      z-index: 1;
+    }
+
+    .xx-banner-item.right-active{
+      transition: transform .4s linear;
+      transform: rotate3d(0,1,0,360deg);
+    }
+
+    .xx-banner-item:nth-child(2) img{
+      width:40vw;
+    }
+
+    .xx-banner-item:nth-child(3){
+      left:-140px;
+      transform:rotate3d(0,1,0,335deg);
+    }
+
+    .xx-banner-item:nth-child(3) img{
+      width:40vw;
+    }
+
+    .xx-banner-item > a{
+      display: inline-block;
+      height:100%;
+      width:100%;
+    }
+
+    .xx-banner-item > img{
+      display: inline-block;
+      height:100%;
+      width:100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="viewport">
+    <div id="content">
+      <div id="root">
+        <header>
+          <nav></nav>
+          <div id="banner" class="xx-banner-container">
+            <ul class="xx-banner-wrapper">
+              <li class="xx-banner-item"><a><img src="http://p3.music.126.net/ZYo1o_bv-8e-bPdtlhPX-w==/18953381439659446.jpg"></img></a></li>
+              <li class="xx-banner-item"><a><img src="http://p4.music.126.net/c0lPHWnHPa3BBcSxr01Vzw==/19111711114079697.jpg"></img></a></li>
+              <li class="xx-banner-item"><a><img src="http://p3.music.126.net/jagvBrsMvPfhe9mbDc9P6w==/18498183627560608.jpg"></img></a></li>
+              <li class="xx-banner-item"><a><img src="http://p3.music.126.net/xdfiKX7lJrPWhgfSJDaR7w==/18700493767083128.jpg"></img></a></li>
+            </ul>
+          </div>
+        </header>
+        
+      </div>
+    </div>
+    <div id="popup-view"></div>
+  </div>
+  <script>
+   var left,clientX,cTarget = null,diff = 0,translateX = 0;
+  
+    document.addEventListener('readystatechange',function(e){
+      var target = e.target || e.srcElement;
+      var readyState = target.readyState;
+
+      switch (readyState){
+        case 'complete':fixContainer();break;
+        default:console.log(readyState)
+      }
+    })
+   
+   function fixContainer(){
+     var images = document.querySelectorAll('.xx-banner-item');
+     var img = images[0].querySelector('img')
+     var container = document.querySelector('.xx-banner-container');
+     var wrapper = container.querySelector('.xx-banner-wrapper')
+     var height = img.height;
+     var width = img.width;
+
+     if(container.style.height !== height + 'px'){
+      container.style.height = height + 'px';
+     }
+
+    //  bindEvent(wrapper)
+     
+   }
+
+   function bindEvent(wrapper){
+     wrapper.addEventListener('mousedown',eventHandler)
+     wrapper.addEventListener('mousemove',eventHandler)
+     wrapper.addEventListener('mouseup',eventHandler)
+   }
+
+   function getOffset(target){
+     return target.getBoundingClientRect();
+   }
+
+   function preventDefault(e){
+     e.preventDefault();
+     e.returnValue = false;
+   }
+
+   function stopPropagation(e){
+     e.stopPropagation();
+     e.cancelBubble = true;
+   }
+
+   function mousemoveHandler(e){
+     var curClientX = e.clientX;
+
+     diff = curClientX - clientX;
+
+     if(cTarget === null){
+        preventDefault(e);
+        stopPropagation(e);
+        return 
+     }
+     if(Number.isNaN(diff)){
+       diff = 0;
+     }
+
+     console.log(diff)
+     handleDiff(e);
+   }
+
+   function handleDiff(e){
+     if(!cTarget){
+        preventDefault(e);
+        stopPropagation(e);
+        return 
+     }
+
+     
+     requestAnimationFrame(function(){
+        clientX = e.clientX;
+        translateX = translateX + diff;
+        cTarget && (cTarget.style.transform = 'translate(' + translateX + 'px,0)');
+     })
+   }
+
+   function bindHandleTarget(e){
+     var target  = e.target;
+     var isRealTarget = function(t){
+       return t.classList && t.classList.contains('xx-banner-item')
+     }
+     var count = 20;
+
+     while(!cTarget && target.parentNode && count--){
+      target = target.parentNode;
+      cTarget = isRealTarget(target) ? target:null;
+     }
+
+     console.log('count:' + count)
+   }
+
+   function eventHandler(e){
+     var target = e.target;
+
+     if(!target.classList.contains('xx-banner-item')){
+        preventDefault(e);
+        stopPropagation(e);
+     }
+
+     switch(e.type){
+       case 'mousedown':
+          left = getOffset(target).left;
+          bindHandleTarget(e);
+          clientX = e.clientX;
+          break;
+        case 'mousemove':mousemoveHandler(e);break;
+        case 'mouseup':cTarget = null;break;
+        case 'click':console.log('client 事件应该响应点击');break;
+        default:console.log('其他事件触发了')
+     }
+   }
+  </script>
+</body>
+
+</html>

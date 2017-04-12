@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>mock banner</title>
+    <meta charset="utf-8">
+    <meta name="keywords" content="banner">
+    <meta name="description" content="banner">
+    <meta name="version" content="1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <!--针对不识别viewport的老式浏览器，比如黑莓-->
+    <meta name="HandheldFriendly" content="true">
+    <!-- 针对微软老式浏览器-->
+    <meta name="MobileOptimized" content="320">
+    <!--启动webapp 全屏模式-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--隐藏状态栏，设置状态栏颜色-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!--UC强制全屏-->
+    <!---->
+    <meta name="full-screen" content="yes">
+    <!--UC应用模式-->
+    <meta name="browsermode" content="application">
+    <!--QQ浏览器强制全屏-->
+    <meta name="x5-full-screen" content="true">
+    <!--QQ浏览器应用模式-->
+    <meta name="x5-page-mode" content="app">
+    <meta name="apple-mobile-web-app-title" content="banner">
+    <link rel="apple-touch-icon" sizes="57x57" href="img/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
+  </head>
+  <body>
+    <header></header>
+    <div id="body">
+      <div id="content">
+        <canvas width="1111" height="520"></canvas>
+      </div>
+    </div>
+
+    <script>
+      var canvas = document.querySelector('canvas');
+      var context = canvas.getContext('2d');
+      var width = canvas.width,height = canvas.height;
+      var minR = 1,maxR = 4;
+      var posY = height/2;
+      var count = 200;
+      var balls = [],stars = [];
+      var radius = height/2;
+
+      var randomX = function(){
+        return parseInt(Math.random() * width,10);
+      }
+
+      var getPosY = function(x){
+        // var calX = x ;
+        // var calY2 =  Math.pow(radius,2) - Math.pow(calX-width/2,2);
+
+        // return height-parseInt(Math.sqrt(calY2),10) -100
+        return Math.random() * height/2
+      }
+
+      var randomR = function(){
+        return parseInt(Math.random() * (maxR - minR),10) + minR;
+      }
+      var Star = function(){
+        this.x = randomX();
+        this.y = getPosY(this.x);
+        this.r = parseInt(Math.random() * (7 - 2),10) + 2;
+
+        this.calPos = function(){
+          var a = this.x,b = this.y,r=this.r;
+
+          this.arrPos = [
+            [a + r * Math.cos(0), b + r * Math.sin(0)],
+            [a + r * Math.cos(Math.PI * 2 / 3), b + r * Math.sin(Math.PI * 2 / 3)],
+            [a + r * Math.cos(Math.PI * 2 / -3), b + r * Math.sin(Math.PI * 2 / -3)],
+            [a + r * Math.cos(Math.PI / 3), b + r * Math.sin(Math.PI / 3)],
+            [a + r * Math.cos(Math.PI / -3), b + r * Math.sin(Math.PI / -3)],
+            [a + r * Math.cos(Math.PI), b + r * Math.sin(Math.PI)]
+          ]
+        }
+        this.draw = function(){
+          this.calPos();
+          var arrPos = this.arrPos;
+
+          context.beginPath();
+          context.moveTo(arrPos[0][0], arrPos[0][1]);
+          context.lineTo(arrPos[1][0], arrPos[1][1]);
+          context.lineTo(arrPos[2][0], arrPos[2][1]);
+          context.closePath();
+          context.fillStyle = '#fff';
+          context.fill();
+
+          context.beginPath();
+          context.moveTo(arrPos[3][0], arrPos[3][1]);
+          context.lineTo(arrPos[4][0], arrPos[4][1]);
+          context.lineTo(arrPos[5][0], arrPos[5][1]);
+          context.closePath();
+          context.fillStyle = '#fff';
+          context.fill();
+        }
+      }
+
+      var star = new Star()
+        
+      var Ball =function(){
+        this.x = randomX();
+        this.y = getPosY(this.x);
+        this.r = randomR();
+
+        this.draw = function(){
+          context.beginPath();
+          context.fillStyle = "#fff";
+          context.arc(this.x,this.y,this.r,0,2 * Math.PI);
+          context.closePath();
+          context.fill();
+        }
+      } 
+      var rqAnimationFrame = function(handler){
+        if(window.requestAnimationFrame){
+          window.requestAnimationFrame(handler);
+        }else{
+          setTimeout(handler,1000/60);
+        }
+      }
+      
+      for(var i = 0;i < count;i ++ ){
+        balls.push(new Ball())
+      }
+
+      for(var i = 0;i < count;i ++ ){
+        stars.push(new Star())
+      }
+
+      var draw = function(){
+        balls.forEach(function(ball){
+          ball.x += ball.r/10;
+          if(ball.x > width){
+            ball.x = - ball.r * 2;
+          }
+          ball.draw();
+        })
+
+        stars.forEach(function(star){
+          var flag = Math.random() > 0.5 ? 1:-1;
+
+            star.x +=  star.r/5;
+            star.y += star.r/4;
+          
+          if(star.x > width){
+            star.x = - star.r * 2;
+          }else if(star.y > height){
+            star.y = 0;
+          }
+
+          star.draw();
+        })
+      }
+
+      var fillBackground = function(){
+        context.fillStyle = '#369';
+        context.fillRect(0,0,width,height);
+      }
+
+      var render = function(){
+        context.clearRect(0,0,width,height);
+
+        fillBackground();
+        
+        draw();
+
+        rqAnimationFrame(render)
+      }
+
+
+      render();
+    </script>
+  </body>
+</html>

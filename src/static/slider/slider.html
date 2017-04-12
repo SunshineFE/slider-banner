@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>mock banner</title>
+  <meta charset="utf-8">
+  <meta name="keywords" content="banner">
+  <meta name="description" content="banner">
+  <meta name="version" content="1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <!--针对不识别viewport的老式浏览器，比如黑莓-->
+  <meta name="HandheldFriendly" content="true">
+  <!-- 针对微软老式浏览器-->
+  <meta name="MobileOptimized" content="320">
+  <!--启动webapp 全屏模式-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <!--隐藏状态栏，设置状态栏颜色-->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!--UC强制全屏-->
+  <!---->
+  <meta name="full-screen" content="yes">
+  <!--UC应用模式-->
+  <meta name="browsermode" content="application">
+  <!--QQ浏览器强制全屏-->
+  <meta name="x5-full-screen" content="true">
+  <!--QQ浏览器应用模式-->
+  <meta name="x5-page-mode" content="app">
+  <meta name="apple-mobile-web-app-title" content="banner">
+  <link rel="apple-touch-icon" sizes="57x57" href="img/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
+  <link rel="stylesheets" type="text/css" href="https://cdn.bootcss.com/normalize/6.0.0/normalize.css">
+  <script>
+    document.addEventListener('readystatechange',function(e){
+      var target = e.target || e.srcElement;
+      var readyState = target.readyState;
+
+
+      switch (readyState){
+        case 'complete':loadScript();;break;
+        default:console.log(readyState)
+      }
+    });
+
+    function loadScript(){
+      var script = document.createElement('script');
+      script.src = './index.js';
+      script.onerror = function(){
+        console.log('err')
+      }
+      script.addEventListener('load',function(){
+        new Slider('.xx-banner-container')
+      })
+
+      document.body.appendChild(script);
+    }
+  </script>
+  <style>
+    ul,li{
+      list-style: none;
+      margin:0;
+      padding: 0;
+    }
+
+    .xx-banner-container{
+      position: relative;
+      overflow: hidden;
+      /*margin-top:40px;*/
+      margin:0 auto;
+    }
+
+    .xx-banner-wrapper{
+      position: absolute;
+      display: -webkit-box;
+      height: 100%;
+      perspective:320;
+      -webkit-perspective:320;
+    }
+
+    .xx-banner-item{
+      position:relative;
+    }
+
+    .xx-banner-item > a{
+      display: inline-block;
+      height:100%;
+      width:100%;
+    }
+
+    .xx-banner-item > img{
+      display: inline-block;
+      height:100%;
+      width:100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="viewport">
+    <div id="content">
+      <div id="root">
+        <header>
+          <nav></nav>
+        </header>
+          
+          <div id="banner" class="xx-banner-container"></div>
+        
+      </div>
+    </div>
+    <div id="popup-view"></div>
+  </div>
+  
+</body>
+
+</html>
